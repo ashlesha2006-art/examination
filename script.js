@@ -52,7 +52,7 @@ document.getElementById("submit-btn").addEventListener("click", function() {
 
 // Function to get the selected answer for each question
 function getSelectedAnswer(questionId) {
-    const selected = document.querySelector(`input[name="${questionId}"]:checked`);
+    const selected = document.querySelector(`input[name="ans${questionId}"]:checked`)
     return selected ? selected.value : null;
 }
 
