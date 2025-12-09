@@ -40,19 +40,20 @@ document.getElementById("submit-btn").addEventListener("click", function() {
 
     console.log(answers);  // Debugging: log the answers
 
-    fetch("https://script.google.com/macros/s/AKfycbw-60s7QDfWo-IXTUAtg-yB-JwPmXHKK1g_yGm4xlTqg3PnvXdYuoaxtMCHzVZl-qc/exec", {  // Replace with the URL you copied from Apps Script
-        method: "POST",
-        headers: {
-            "Content-Type": "application/x-www-form-urlencoded"
-        },
-        body: new URLSearchParams(answers)
-    })
-    .then(response => response.text())
-    .then(result => {
-        console.log(result);  // Debugging: log the server's response
-        alert("Exam Submitted Successfully!");
-    })
-    .catch(error => console.error("Error:", error));
+    fetch("https://script.google.com/macros/s/AKfycbzEBeUjF4SA4t__St8f6WmSqfg2M_c8_RmzpAeQi_w/dev", {
+    method: "POST",
+    headers: {
+        "Content-Type": "application/x-www-form-urlencoded"
+    },
+    body: new URLSearchParams(answers)
+})
+.then(response => response.text())
+.then(result => {
+    console.log(result);  // Log the server's response
+    alert("Exam Submitted Successfully!");
+})
+.catch(error => console.error("Error:", error));
+
 });
 
 // Function to get the selected answer for each question
