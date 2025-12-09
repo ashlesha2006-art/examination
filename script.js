@@ -1,59 +1,29 @@
-// Example JavaScript to load questions and handle form submission
-const questions = [
-    {
-        question: "What is the capital of France?",
-        options: ["Paris", "Berlin", "Rome", "Madrid"],
-        correctAnswer: "Paris"
-    },
-    {
-        question: "What is 2 + 2?",
-        options: ["3", "4", "5", "6"],
-        correctAnswer: "4"
-    }
-];
+// Function to generate CSV from an array of data
+function generateCSV(data) {
+    const header = ['Name', 'Email', 'Answer 1', 'Answer 2'];
+    const rows = data.map(row => [row.name, row.email, row.answer1, row.answer2]);
 
-// Load questions dynamically into the page
-function loadQuestions() {
-    const container = document.getElementById('question-container');
-    questions.forEach((q, index) => {
-        let questionHTML = `<div class="question">
-            <p>${q.question}</p>
-            ${q.options.map((option, i) => `
-                <label>
-                    <input type="radio" name="q${index}" value="${option}">
-                    ${option}
-                </label><br>
-            `).join('')}
-        </div>`;
-        container.innerHTML += questionHTML;
-    });
+    const csvContent = [
+        header.join(','), // header
+        ...rows.map(row => row.join(',')) // data rows
+    ].join('\n');
+    return csvContent;
 }
 
-// Handle form submission
+// Example form submission to generate CSV
 document.getElementById("submit-btn").addEventListener("click", function() {
     const answers = {
         name: document.getElementById("name").value,
         email: document.getElementById("email").value,
-        answer1: getSelectedAnswer(0),  // for question 1
-        answer2: getSelectedAnswer(1),  // for question 2
+        answer1: getSelectedAnswer(0),
+        answer2: getSelectedAnswer(1)
     };
 
-    console.log(answers);  // Debugging: log the answers
+    // Create the CSV content
+    const csvContent = generateCSV([answers]);
 
-    fetch("https://script.google.com/macros/s/AKfycbw-60s7QDfWo-IXTUAtg-yB-JwPmXHKK1g_yGm4xlTqg3PnvXdYuoaxtMCHzVZl-qc/exec", {
-    method: "POST",
-    headers: {
-        "Content-Type": "application/x-www-form-urlencoded"
-    },
-    body: new URLSearchParams(answers)
-})
-.then(response => response.text())
-.then(result => {
-    console.log(result);  // Log the server's response
-    alert("Exam Submitted Successfully!");
-})
-.catch(error => console.error("Error:", error));
-
+    // Push this CSV to GitHub (next step)
+    pushToGitHub(csvContent);
 });
 
 // Function to get the selected answer for each question
@@ -62,5 +32,48 @@ function getSelectedAnswer(questionId) {
     return selected ? selected.value : null;
 }
 
-// Load questions when the page is ready
-window.onload = loadQuestions;
+// Push the generated CSV to GitHub repository using GitHub API
+function pushToGitHub(csvContent) {
+    const token = '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'; // GitHub Personal Access Token
+    const repoOwner = 'aslesha2006-art'; // Replace with your GitHub username
+    const repoName = 'examination'; // Replace with your repository name
+    const filePath = 'exam_results.csv'; // Path to the file in the repository
+
+    const apiUrl = `https://api.github.com/repos/${repoOwner}/${repoName}/contents/${filePath}`;
+
+    // Fetch the file's current content from GitHub to check if it exists
+    fetch(apiUrl, {
+        method: 'GET',
+        headers: {
+            'Authorization': `token ${token}`,
+            'Accept': 'application/vnd.github.v3+json'
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        let sha = data.sha || ''; // The sha of the existing file (if it exists)
+        // Create or update the file
+        return fetch(apiUrl, {
+            method: 'PUT',
+            headers: {
+                'Authorization': `token ${token}`,
+                'Accept': 'application/vnd.github.v3+json'
+            },
+            body: JSON.stringify({
+                message: 'Update exam results',
+                content: btoa(csvContent), // Base64-encoded CSV content
+                sha: sha // If file exists, send its sha to update it
+            })
+        });
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.content) {
+            alert("Exam results saved successfully to GitHub!");
+        }
+    })
+    .catch(error => {
+        console.error("Error:", error);
+        alert("There was an error saving the data.");
+    });
+}
