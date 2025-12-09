@@ -38,7 +38,7 @@ document.getElementById("submit-btn").addEventListener("click", function() {
         answer2: getSelectedAnswer("question2"),
     };
 
-    fetch("https://script.google.com/macros/s/AKfycbw-60s7QDfWo-IXTUAtg-yB-JwPmXHKK1g_yGm4xlTqg3PnvXdYuoaxtMCHzVZl-qc/exec", {  // Replace with the URL you copied from Apps Script
+    fetch("https://script.google.com/macros/library/d/10mXWQ_vvugjvQhyYDHnmEBpJciAXt2FUaj15DlSBTXPj-hWyLwbcZVbj/1", {  // Replace with the URL you copied from Apps Script
         method: "POST",
         headers: {
             "Content-Type": "application/x-www-form-urlencoded"
