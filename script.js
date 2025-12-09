@@ -40,7 +40,7 @@ document.getElementById("submit-btn").addEventListener("click", function() {
 
     console.log(answers);  // Debugging: log the answers
 
-    fetch("https://script.google.com/macros/s/AKfycbzEBeUjF4SA4t__St8f6WmSqfg2M_c8_RmzpAeQi_w/dev", {
+    fetch("https://script.google.com/macros/s/AKfycbw-60s7QDfWo-IXTUAtg-yB-JwPmXHKK1g_yGm4xlTqg3PnvXdYuoaxtMCHzVZl-qc/exec", {
     method: "POST",
     headers: {
         "Content-Type": "application/x-www-form-urlencoded"
